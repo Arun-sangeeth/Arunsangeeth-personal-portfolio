@@ -82,6 +82,38 @@ document.addEventListener('DOMContentLoaded', () => {
     // Start typing after short delay
     setTimeout(typeWriter, 500);
 
+    // Projects Toggle Logic
+    const toggleProjectsBtn = document.getElementById('toggle-projects-btn');
+    const hiddenProjects = document.querySelectorAll('.hidden-project');
+
+    if (toggleProjectsBtn && hiddenProjects.length > 0) {
+        let isExpanded = false;
+
+        toggleProjectsBtn.addEventListener('click', () => {
+            isExpanded = !isExpanded;
+
+            hiddenProjects.forEach(project => {
+                if (isExpanded) {
+                    project.classList.add('show');
+                } else {
+                    project.classList.remove('show');
+                }
+            });
+
+            if (isExpanded) {
+                toggleProjectsBtn.innerHTML = 'Show Less <i class="fa-solid fa-chevron-up"></i>';
+            } else {
+                toggleProjectsBtn.innerHTML = 'More Projects <i class="fa-solid fa-chevron-down"></i>';
+
+                // Optional: Scroll back up slightly to the projects section start
+                const projectsSection = document.getElementById('projects');
+                const yOffset = -70; // Header offset
+                const y = projectsSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            }
+        });
+    }
+
     // Form submission simulation
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {

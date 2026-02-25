@@ -582,6 +582,20 @@ ul {
   box-shadow: 0 10px 30px rgba(0, 255, 136, 0.1);
 }
 
+.hidden-project {
+  display: none;
+}
+
+.hidden-project.show {
+  display: flex;
+}
+
+.projects-toggle {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+}
+
 .project-image {
   position: relative;
   height: 200px;
