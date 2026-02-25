@@ -1,0 +1,112 @@
+document.addEventListener('DOMContentLoaded', () => {
+
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth'
+                });
+                // close mobile menu if opened
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+            }
+        });
+    });
+
+    // Mobile Navigation Toggle
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks = document.querySelector('.nav-links');
+
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navLinks.classList.toggle('active');
+    });
+
+    // Navbar Scrolled Effect
+    const navbar = document.querySelector('.navbar');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+
+        // Active Link Highlight
+        let current = '';
+        document.querySelectorAll('section').forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (pageYOffset >= sectionTop - 150) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        document.querySelectorAll('.nav-link').forEach(li => {
+            li.classList.remove('active');
+            if (li.getAttribute('href') === `#${current}`) {
+                li.classList.add('active');
+            }
+        });
+    });
+
+    // Typing Effect Logic (Hero section)
+    const typeContainer = document.getElementById('type-container');
+    const textOriginal = "SOC Analyst Detecting Threats Before They Escalate_";
+    const highlightTarget = "SOC Analyst";
+
+    let i = 0;
+
+    // Create the wrapper span with the typing blink effect
+    const typingElement = document.createElement('span');
+    typingElement.className = 'typing-text';
+    typeContainer.appendChild(typingElement);
+
+    const typeWriter = () => {
+        if (i < textOriginal.length) {
+            // Check if we are typing the 'SOC Analyst' part
+            if (i < highlightTarget.length) {
+                typingElement.innerHTML += `<span style="color: var(--text-main); font-weight: 700;">${textOriginal.charAt(i)}</span>`;
+            } else {
+                typingElement.innerHTML += textOriginal.charAt(i);
+            }
+            i++;
+            setTimeout(typeWriter, Math.random() * 50 + 30); // Random typing speed between 30-80ms
+        }
+    };
+
+    // Start typing after short delay
+    setTimeout(typeWriter, 500);
+
+    // Form submission simulation
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const submitBtn = contactForm.querySelector('.submit-btn');
+            const originalText = submitBtn.innerHTML;
+
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Transmitting...';
+            submitBtn.style.pointerEvents = 'none';
+
+            // Simulate API request
+            setTimeout(() => {
+                submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> Packet Delivered';
+                submitBtn.style.backgroundColor = 'var(--accent-green)';
+                submitBtn.style.color = 'var(--bg-dark)';
+                contactForm.reset();
+
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.style.backgroundColor = 'transparent';
+                    submitBtn.style.color = 'var(--accent-green)';
+                    submitBtn.style.pointerEvents = 'auto';
+                }, 3000);
+            }, 1500);
+        });
+    }
+});
