@@ -114,8 +114,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Form submission simulation
+    // Form submission to Google Forms
     const contactForm = document.getElementById('contactForm');
+    const successModal = document.getElementById('successModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    if (closeModalBtn && successModal) {
+        closeModalBtn.addEventListener('click', () => {
+            successModal.classList.remove('show');
+        });
+
+        // Close when clicking outside content
+        successModal.addEventListener('click', (e) => {
+            if (e.target === successModal) {
+                successModal.classList.remove('show');
+            }
+        });
+    }
+
     if (contactForm) {
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -125,12 +141,21 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Transmitting...';
             submitBtn.style.pointerEvents = 'none';
 
-            // Simulate API request
-            setTimeout(() => {
+            const formData = new FormData(contactForm);
+
+            fetch('https://docs.google.com/forms/u/0/d/e/1FAIpQLSfLbt3b9aiUPq7zt1_POw5qnTaqpSZdnKR_QfHDzgWnp-Y-9Q/formResponse', {
+                method: 'POST',
+                mode: 'no-cors',
+                body: formData
+            }).then(() => {
                 submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> Packet Delivered';
                 submitBtn.style.backgroundColor = 'var(--accent-green)';
                 submitBtn.style.color = 'var(--bg-dark)';
                 contactForm.reset();
+
+                if (successModal) {
+                    successModal.classList.add('show');
+                }
 
                 setTimeout(() => {
                     submitBtn.innerHTML = originalText;
@@ -138,7 +163,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     submitBtn.style.color = 'var(--accent-green)';
                     submitBtn.style.pointerEvents = 'auto';
                 }, 3000);
-            }, 1500);
+            }).catch((error) => {
+                console.error('Error submitting form', error);
+                submitBtn.innerHTML = '<i class="fa-solid fa-xmark"></i> Transmission Failed';
+                submitBtn.style.backgroundColor = '#ff4d4d';
+                contactForm.reset();
+
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.style.backgroundColor = 'transparent';
+                    submitBtn.style.pointerEvents = 'auto';
+                }, 3000);
+            });
         });
     }
 });
